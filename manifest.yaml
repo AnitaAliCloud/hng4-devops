@@ -1,7 +1,7 @@
 services:
-  image: swift-deploy-1-node:latest
+  image: anitaali-swiftdeploy:latest
   port: 3000
-  mode: canary
+  mode: stable
   version: "1.0.0"
   restart_policy: unless-stopped
 
