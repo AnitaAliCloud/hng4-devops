@@ -59,6 +59,14 @@ class AppHandler(BaseHTTPRequestHandler):
     The request handler. Each incoming HTTP request creates one instance.
     do_GET / do_POST are called automatically by HTTPServer based on method.
     """
+    def do_HEAD(self):
+        # HEAD is like GET but returns headers only, no body.
+        # curl -I uses HEAD. We just respond 200 with no body.
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        if MODE == "canary":
+           self.send_header("X-Mode", "canary")
+        self.end_headers()
 
     def log_message(self, format, *args):
         # Suppress default stderr logging (Nginx handles access logs)
