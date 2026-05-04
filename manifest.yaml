@@ -1,0 +1,20 @@
+services:
+  image: swift-deploy-1-node:latest
+  port: 3000
+  mode: canary
+  version: "1.0.0"
+  restart_policy: unless-stopped
+
+nginx:
+  image: nginx:latest
+  port: 8080
+  proxy_timeout: 30
+
+network:
+  name: swiftdeploy-net
+  driver_type: bridge
+
+volumes:
+  logs: app-logs
+
+contact: "ops@swiftdeploy.local"

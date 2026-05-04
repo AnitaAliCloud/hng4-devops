@@ -1,0 +1,52 @@
+worker_processes auto;
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    log_format swiftdeploy '$time_iso8601 | $status | ${request_time}s | $upstream_addr | $request';
+
+    access_log /var/log/nginx/access.log swiftdeploy;
+    error_log  /var/log/nginx/error.log warn;
+
+    upstream app_backend {
+        server {{SERVICE_HOST}}:{{SERVICE_PORT}};
+    }
+
+    map $status $error_message {
+        502 "Bad Gateway — upstream service unavailable";
+        503 "Service Unavailable — upstream overloaded or down";
+        504 "Gateway Timeout — upstream took too long to respond";
+        default "";
+    }
+
+    server {
+        listen {{NGINX_PORT}};
+        server_name localhost;
+
+        proxy_connect_timeout {{PROXY_TIMEOUT}}s;
+        proxy_send_timeout    {{PROXY_TIMEOUT}}s;
+        proxy_read_timeout    {{PROXY_TIMEOUT}}s;
+
+        error_page 502 503 504 @json_error;
+
+        location @json_error {
+            default_type application/json;
+            return 502 '{"error":"Bad Gateway","code":"502","service":"swiftdeploy","contact":"{{CONTACT}}"}';
+        }
+
+        location / {
+            proxy_pass http://app_backend;
+
+            proxy_set_header Host              $host;
+            proxy_set_header X-Real-IP         $remote_addr;
+            proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+
+            add_header X-Deployed-By "swiftdeploy" always;
+
+            proxy_pass_header X-Mode;
+        }
+    }
+}
