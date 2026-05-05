@@ -29,14 +29,14 @@ project/
 
 ```bash
 # 1. Clone the repo
-git clone <your-repo-url>
-cd swiftdeploy
+git clone https://github.com/AnitaAliCloud/hng4-devops
+cd hng4-devops
 
 # 2. Make CLI executable
 chmod +x swiftdeploy
 
 # 3. Build the Docker image
-docker build -t swift-deploy-1-node:latest ./app
+docker build -t anitaali-swiftdeploy:latest ./app
 ```
 
 ## Subcommand Walkthrough
