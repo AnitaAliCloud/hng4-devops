@@ -10,7 +10,7 @@ project/
 ├── swiftdeploy              ← CLI executable
 ├── app/
 │   ├── main.py              ← Python HTTP API service
-│   ├── Dockerfile           ← Multi-stage Alpine build
+│   ├── Dockerfile           ← Single-stage Alpine build
 │   └── requirements.txt
 ├── templates/
 │   ├── nginx.conf.tmpl      ← Nginx config template
